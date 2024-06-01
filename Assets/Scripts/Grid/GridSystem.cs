@@ -22,7 +22,7 @@ public class GridSystem
             for (int z = 0; z < depth; z++)
             {
                 Vector2Int gridPosition = new Vector2Int(x, z);
-                grids[gridPosition] = new GridObject(0, gridPosition);                
+                grids[gridPosition] = new GridObject(gridPosition);                
             }
         }
     }
@@ -40,7 +40,7 @@ public class GridSystem
         GridObject headGrid = GetGridObject(clickedPosition.x, clickedPosition.y);
         headGrid.buildingData = buildingData;
         
-        HandleCreatePrefab(clickedPosition, buildingData.prefab);
+        HandleCreatePrefabOnGrid(clickedPosition, buildingData.prefab);
 
         for (int x = clickedPosition.x; x < clickedPosition.x + buildingSize.x; x++)
         {
@@ -48,16 +48,17 @@ public class GridSystem
             {
                 GridObject gridObject = GetGridObject(x, z);
                 gridObject.ref_grid = headGrid;
-
                 GridVisualizer.Instance.SetCellInfo(new Vector2Int(x, z), buildingData, true);
             }
         }
     }
 
-    private void HandleCreatePrefab(Vector2Int gridPos, GameObject buildingPrefab)
+    private void HandleCreatePrefabOnGrid(Vector2Int gridPos, GameObject buildingPrefab)
     {
         GameObject prefab = GameObject.Instantiate(buildingPrefab, new Vector3(gridPos.x, 0, gridPos.y) * cellSize, Quaternion.identity);
-        float prefabSize = 0.1f * cellSize;
+
+        //NOTE: I have got this value from testing in 3d viewport so this value is perfectly with scale of prefab that's depend on cellSize
+        float prefabSize = 0.1f * cellSize; 
         prefab.transform.localScale = new Vector3(prefabSize, prefabSize, prefabSize);
     }
 
@@ -95,13 +96,14 @@ public class GridSystem
 
     private bool CanBuild(Vector2Int startPos, Vector2Int buildingSize)
     {
+        //Check that startPos is not out of grid range
         if(startPos.x < 0 || startPos.y < 0 || startPos.x >= width || startPos.y >= depth) return false;
 
         for (int x = startPos.x; x < startPos.x + buildingSize.x; x++)
         {
             for (int z = startPos.y; z < startPos.y + buildingSize.y; z++)
             {
-                GridObject gridObject = grids[new Vector2Int(x, z)];
+                GridObject gridObject = GetGridObject(x, z);
                 if(gridObject.ref_grid != null)
                 {
                     return false;
@@ -110,6 +112,11 @@ public class GridSystem
         }
 
         return true;
+    }
+
+    public void SelectGrid()
+    {
+
     }
 
     public GridObject GetGridObject(int x, int z)

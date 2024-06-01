@@ -55,6 +55,17 @@ namespace Assets.Scripts
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
             {
+                if (operation == UserOperation.None)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        //Selection Grid
+                        Vector2Int gridPosition = gridSystem.GetGridPositionFromWorldPosition(hitInfo.point);
+                        GridObject selectedGrid = gridSystem.GetGridObject(gridPosition.x, gridPosition.y);
+                        Debug.Log(selectedGrid);
+                    }
+                }
+
                 if (buildingData == null) return;
 
                 if (operation == UserOperation.Placement)

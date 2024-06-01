@@ -10,5 +10,6 @@ public class OperationUIObject : MonoBehaviour
     public void SetUserOperation()
     {
         GameManager.Instance.operation = operation;
+        GridVisualizer.Instance.ResetAllGridHighlights();
     }
 }

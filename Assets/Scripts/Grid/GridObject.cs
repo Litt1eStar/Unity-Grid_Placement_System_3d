@@ -8,7 +8,7 @@ public class GridObject
     public GridObject ref_grid;
     public BuildingSO buildingData;
 
-    public GridObject(int value, Vector2Int gridPosition)
+    public GridObject(Vector2Int gridPosition)
     {        
         this.gridPosition = gridPosition;
 

@@ -52,7 +52,6 @@ public class GridVisualizer : MonoBehaviour
 
     private void DrawGrid()
     {
-        // Draw grid cells
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < depth; z++)
@@ -67,6 +66,7 @@ public class GridVisualizer : MonoBehaviour
         }
     }
 
+    //Used to Generate Cell and 1 cell = 4 lines
     private void CreateCellLines(Vector2Int gridPos, Vector3 cellStart)
     {
         LineRenderer[] lines = new LineRenderer[4];
@@ -79,6 +79,7 @@ public class GridVisualizer : MonoBehaviour
         cellLineRenderers[gridPos] = lines;
     }
 
+    //Used to Generate single line
     private LineRenderer CreateLineRenderer(Vector3 start, Vector3 end)
     {
         GameObject lineObject = new GameObject("GridLine");
@@ -100,6 +101,7 @@ public class GridVisualizer : MonoBehaviour
         return lineRenderer;
     }
 
+    //Used to generate textObject of Cell that will located at the center of cell
     private void CreateTextObject(Vector2Int gridPos, string text, Vector3 position)
     {
         GameObject textObj = Instantiate(gridText, lineRendererParent.position, Quaternion.identity, lineRendererParent);
@@ -113,6 +115,8 @@ public class GridVisualizer : MonoBehaviour
 
         textMeshes[gridPos] = textInfo;
     }
+    
+    //This method is not my stuff | It's CHATGPT4 stuff :3
     private float CalculateFontSize(float cellSize)
     {        
         float baselineCellSize = 20f;
@@ -124,11 +128,6 @@ public class GridVisualizer : MonoBehaviour
         return fontSize;
     }
 
-    public void ToggleGridVisualization()
-    {
-        isVisualizing = !isVisualizing;
-        lineRendererParent.gameObject.SetActive(isVisualizing);
-    }
 
     public void StartVisualizeOverlayGrid(Vector3 hitInfo, Vector2Int buildingSize)
     {
@@ -136,6 +135,7 @@ public class GridVisualizer : MonoBehaviour
 
         Vector2Int clickedPosition = gridSystem.GetGridPositionFromWorldPosition(hitInfo);
 
+        //If clickedPosition is out of grid range
         if (clickedPosition == new Vector2Int(-1, -1))
         {
             ResetAllGridHighlights();
@@ -158,6 +158,7 @@ public class GridVisualizer : MonoBehaviour
         }
     }
 
+    //Basically, This method just change color of line, text and create overlayObj that's used in real-game
     private void HighlightGridCell(Vector2Int gridPos, Color color)
     {
         if (cellLineRenderers.ContainsKey(gridPos))
@@ -307,4 +308,11 @@ public class GridVisualizer : MonoBehaviour
             Debug.LogWarning($"No text mesh found for grid position {gridPos}");
         }
     }
+
+    public void ToggleGridVisualization()
+    {
+        isVisualizing = !isVisualizing;
+        lineRendererParent.gameObject.SetActive(isVisualizing);
+    }
+
 }
