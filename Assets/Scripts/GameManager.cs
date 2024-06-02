@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using UnityEditor.PackageManager;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -46,8 +44,7 @@ namespace Assets.Scripts
 
         void Update()
         {
-
-            if (Input.GetKeyDown(KeyCode.F2))
+            if (Input.GetKeyDown(KeyCode.F2) && GridVisualizer.Instance.shownGrid)
             {
                 GridVisualizer.Instance.ToggleGridVisualization();
             }
@@ -55,65 +52,58 @@ namespace Assets.Scripts
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
             {
-                if (operation == UserOperation.None)
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        //Selection Grid
-                        Vector2Int gridPosition = gridSystem.GetGridPositionFromWorldPosition(hitInfo.point);
-                        GridObject selectedGrid = gridSystem.GetGridObject(gridPosition.x, gridPosition.y);
-                        Debug.Log(selectedGrid);
-                    }
-                }
-
-                if (buildingData == null) return;
+                Vector2Int gridPosition = gridSystem.GetGridPositionFromWorldPosition(hitInfo.point);
 
                 if (operation == UserOperation.Placement)
                 {
+                    if (buildingData == null)
+                        return;
+
                     GridVisualizer.Instance.StartVisualizeOverlayGrid(hitInfo.point, buildingData.buildingSize);
                 }
 
-                if (Input.GetMouseButtonDown(1))
+                switch (operation)
                 {
-                    switch (operation)
-                    {
-                        case UserOperation.Placement:
-                            HandlePlacementOperation(hitInfo);
-                            break;
-                        case UserOperation.Delete:
-                            HandleDeleteOperation(hitInfo);
-                            break;
-
-                    }
+                    case UserOperation.Placement:
+                        HandlePlacementOperation(hitInfo);
+                        break;
+                    case UserOperation.Delete:
+                        HandleDeleteOperation(hitInfo);
+                        break;
                 }
             }
-
         }
+
 
         private void HandlePlacementOperation(RaycastHit hitInfo)
         {
+            if (buildingData == null) return;
+
             Vector2Int clickedPosition = gridSystem.GetGridPositionFromWorldPosition(hitInfo.point);
-            gridSystem.PlaceBuilding(clickedPosition, buildingData);   
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                gridSystem.PlaceBuilding(clickedPosition, buildingData);
+            }
         }
 
         private void HandleDeleteOperation(RaycastHit hitInfo)
         {
             Vector2Int clickedPosition = gridSystem.GetGridPositionFromWorldPosition(hitInfo.point);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity,buildingLayerMask))
+
+            if (Input.GetMouseButtonDown(1))
             {
-                Debug.Log(hit.transform.gameObject.name);
-                GameObject buildingOnScene = hit.transform.gameObject;
+                if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                    return;
+
+                GameObject buildingOnScene = hitInfo.collider.gameObject;
                 gridSystem.DeleteBuilding(clickedPosition, buildingOnScene);
             }
         }
-
 
         public void SetBuildingData(BuildingSO buildingData)
         {
             this.buildingData = buildingData;
         }
     }
-
-
 }

@@ -22,6 +22,9 @@ public class GridVisualizer : MonoBehaviour
     [SerializeField] private Color defaultColor = Color.white;
     [SerializeField] private Color usedColor = Color.yellow;
 
+    //Testing Purpose
+    public bool shownGrid;
+
     private Dictionary<Vector2Int, LineRenderer[]> cellLineRenderers = new Dictionary<Vector2Int, LineRenderer[]>();
     private Dictionary<Vector2Int, TextMeshPro> textMeshes = new Dictionary<Vector2Int, TextMeshPro>();
     private Dictionary<Vector2Int, GameObject> overlayGamObjects = new Dictionary<Vector2Int, GameObject>();
@@ -47,7 +50,8 @@ public class GridVisualizer : MonoBehaviour
 
         lineRendererParent.gameObject.SetActive(isVisualizing);
 
-        DrawGrid();
+        if(shownGrid)
+            DrawGrid();
     }
 
     private void DrawGrid()
@@ -67,6 +71,7 @@ public class GridVisualizer : MonoBehaviour
     }
 
     //Used to Generate Cell and 1 cell = 4 lines
+    //NOTE: I have put picture to shown that how this method is working in README.md
     private void CreateCellLines(Vector2Int gridPos, Vector3 cellStart)
     {
         LineRenderer[] lines = new LineRenderer[4];
