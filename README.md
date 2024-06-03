@@ -79,8 +79,9 @@ Uses LineRenderer to visualize the grid. This class provides methods to draw the
 ## Performance Considerations
 The grid visualization feature is resource-intensive, especially with real-time rendering. It's intended primarily for development and testing rather than actual gameplay.
 
-## Here is an Image shown how grid cell that used to visualize created
-Basically, It's just draw an square that building in this order bottom line, top line, left, right
+## Grid Visualization
+To visualize a grid cell, lines are drawn to create a square. The lines are drawn in this order: bottom line, top line, left line, and right line.
+
 #### Here is method used to create visualize cell:
 #### GridVisualizer.cs
 ```csharp
@@ -115,6 +116,21 @@ private LineRenderer CreateLineRenderer(Vector3 start, Vector3 end)
     lineRenderer.endColor = defaultColor;
 
     return lineRenderer;
+}
+```
+
+if you want to highlihgt grid cell then you can change color of lineRenderer by use gridPosition to access to lineRenderer.
+#### Example
+```csharp
+if (cellLineRenderers.ContainsKey(gridPos))
+{
+    LineRenderer[] lines = cellLineRenderers[gridPos];
+    foreach (var line in lines)
+    {
+        line.startColor = color;
+        line.endColor = color;
+        line.material.color = color;
+    }
 }
 ```
 ![image](https://github.com/Litt1eStar/Unity-Grid_Placement_System_3d/assets/90139527/8625335c-e9b1-4ada-adfc-f5d1a8e243f8)
