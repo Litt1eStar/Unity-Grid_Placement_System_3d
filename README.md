@@ -1,34 +1,121 @@
-# Unity - Grid Placment System 3d
-## Read this message
-This is Grid Placement System in 3d where you can Place and Delete building on grid
-- Basically, I have create this repository for my experimental to create Grid System from Scracth by myself.
-- I found that Grid Placement System logic is does not complex that much by itself but the part that i found that it's a bit **triggy** is Grid Visualize.
-- Grid Visualize is feature that will make your grid have some visual so basically in most of game didn't need to do this in real gameplay but it's very useful for **Development Stage**.
-- **In my opinion**, Grid Visualize is make developer can see what they do are correctly or not on grid and it's great in testing purpose.
-- In this Repository, I have add some comparment about perfomance of Grid Visualize too. So you will see that it's use a lot of resource to run this feature in real-time rendering
+# Unity - Grid Placement System 3D
 
-## If you want to looking to Grid System then these are class that you need to work with
-#### GridSystem.cs
-**File**: `Assets/Script/Grid/GridSystem.cs`
+## Overview
+This project implements a Grid Placement System in 3D, allowing for the placement and deletion of buildings on a grid. It serves as an experimental project to develop a grid system from scratch. While the logic for the grid placement system is straightforward, the visualization aspect of the grid is somewhat tricky. The grid visualization feature is particularly useful during the development stage, enabling developers to see the grid and ensure the accuracy of their actions. It is also helpful for testing purposes.
+
+
+https://github.com/Litt1eStar/Unity-Grid_Placement_System_3d/assets/90139527/be4fe716-8cad-4bf3-8e2d-466a34733a4e
+
+
+## Key Features
+- **Grid Placement and Deletion**: Place and delete buildings on a grid with intuitive logic.
+- **Grid Visualization**: Visualize the grid using LineRenderer for development and testing purposes.
+- **Performance Considerations**: Includes performance comparisons for grid visualization, as real-time rendering can be resource-intensive.
+
+## Main Classes
+
+### GridObject.cs
+**File**: `Assets/Scripts/Grid/GridObject.cs`
 
 **Description**:
-This is C# Object that have contain logic of Grid System. For example PlacementBuilding, DeleteBuilding and other method to work with grid system
-- I have contain grid data as Dictionary<Vector2Int, GridObject> that's key of Dictionary is grid position and value of Dictionary is grid object
-- #### For Placement building on grid logic, basically in GridObject there is 1 field named **ref_head** that's GridObject data type.
-  - In my experimental project, User need to click on 1 grid to place building.
-  - So, we will have data of GridPosition where user is clicked and we need another data that's building size.
-  - Let said that in this case it's (3x3) bulding size.
-  - Now to place building on grid, we already have 2 data (**Vector2Int** clickedPosition, **Vector2Int** buildingSize) and we have another data named **headGrid** that's grid at the position of clickedPosition then it's just iterating to all grid in range of buildingSize and loop is started from clickedPosition and it will assign value of ref_head to be **headGrid**
-  - For now, all grid that started from clickedPosition and it's in range of buildingSize(3x3) will have ref_head as headGrid and we assign building data to headGrid only.
-- #### For Delete building on grid logic
-  - In my experimental project, User can click at any grid of building to delete that building.
-  - To Delete building we need 2 data (**Vector2Int** clickedPosition, **Gameobejct** buildingOnScene).
-  - When user is clicked on grid then we will have that GridObject at position of clickedPosition and if that GridObject have ref_head it's meaning that this grid have building on it.
-  - So, to delete this building. we have another data that get from clickedPosition that's ref_head of grid then we're going to start loop at ref_head grid position and loop in range of buildingSize and set ref_head to be null.
-  - Now all grid that's started from ref_head position and it's in range of buildingSize will have ref_head value to be null so this is meaning that buildingData is deleted.
-  - Last thing that we need to do is delete building data at ref_head and Destroy buildingOnScene Gameobject
+Represents the data for each grid cell.
+
+**Fields**:
+- `Vector2Int gridPosition`: Position of the grid cell.
+- `GridObject ref_grid`: Reference to the head grid object.
+- `BuildingSO buildingData`: Data related to the building on this grid.
+
+### GridSystem.cs
+**File**: `Assets/Scripts/Grid/GridSystem.cs`
+
+**Description**:
+Contains the logic for the grid system, including methods for placing and deleting buildings.
+
+**Fields**:
+- `Dictionary<Vector2Int, GridObject> grids`: Stores grid data with grid position as the key and GridObject as the value.
+
+**Key Methods**:
+- `PlaceBuilding(Vector2Int clickedPosition, BuildingSO buildingData)`: Places a building on the grid.
+- `DeleteBuilding(Vector2Int clickedGridPosition, GameObject buildingOnScene)`: Deletes a building from the grid.
+- `CanBuild(Vector2Int startPos, Vector2Int buildingSize)`: Checks if a building can be placed at the specified position.
+- `GetGridObject(int x, int z)`: Retrieves the grid object at the specified position.
+- `GetGridPositionFromWorldPosition(Vector3 worldPosition)`: Converts world position to grid position.
+- `GetWorldPositionFromGridPosition(Vector2Int gridPosition)`: Converts grid position to world position.
+
+### GridVisualizer.cs
+**File**: `Assets/Scripts/Grid/GridVisualizer.cs`
+
+**Description**:
+Uses LineRenderer to visualize the grid. This class provides methods to draw the grid, highlight cells, and display overlay information.
+
+**Key Fields**:
+- `Dictionary<Vector2Int, LineRenderer[]> cellLineRenderers`: Stores line renderers for each grid cell.
+- `Dictionary<Vector2Int, TextMeshPro> textMeshes`: Stores text objects for each grid cell.
+- `Dictionary<Vector2Int, GameObject> overlayGameObjects`: Stores overlay objects for each grid cell.
+
+**Key Methods**:
+- `DrawGrid()`: Draws the entire grid.
+- `CreateCellLines(Vector2Int gridPos, Vector3 cellStart)`: Creates lines for a single grid cell.
+- `HighlightGridCell(Vector2Int gridPos, Color color)`: Highlights a specified grid cell.
+- `ResetAllGridHighlights()`: Resets highlights for all grid cells.
+- `SetCellInfo(Vector2Int gridPos, BuildingSO buildingData, bool isBuildingPlaced)`: Updates the cell information based on building data.
+
+## Usage
+
+### Placing a Building
+1. The user clicks on a grid cell to place a building.
+2. The `PlaceBuilding` method is called with the clicked position and building data.
+3. The method assigns the building data to the head grid and updates the reference for all relevant grid cells.
+
+### Deleting a Building
+1. The user clicks on a grid cell that contains a building to delete it.
+2. The `DeleteBuilding` method is called with the clicked position and the building game object.
+3. The method clears the building data from the grid and destroys the building game object.
+
+### Visualizing the Grid
+1. The `DrawGrid` method is called to draw the grid using LineRenderer.
+2. The `HighlightGridCell` method is used to highlight cells, which is useful for overlay visualization when placing buildings.
+
+## Performance Considerations
+The grid visualization feature is resource-intensive, especially with real-time rendering. It's intended primarily for development and testing rather than actual gameplay.
+
+## Here is an Image shown how grid cell that used to visualize created
+Basically, It's just draw an square that building in this order bottom line, top line, left, right
+#### Here is method used to create visualize cell:
 #### GridVisualizer.cs
-**File**: `Assets/Script/Grid/GridVisualizer.cs`
-#### GridObject.cs
-**File**: `Assets/Script/Grid/GridObject.cs`
+```csharp
+private void CreateCellLines(Vector2Int gridPos, Vector3 cellStart)
+{
+    LineRenderer[] lines = new LineRenderer[4];
+
+    lines[0] = CreateLineRenderer(cellStart, cellStart + new Vector3(cellSize, 0, 0)); // Bottom
+    lines[1] = CreateLineRenderer(cellStart + new Vector3(0, 0, cellSize), cellStart + new Vector3(cellSize, 0, cellSize)); // Top
+    lines[2] = CreateLineRenderer(cellStart, cellStart + new Vector3(0, 0, cellSize)); // Left
+    lines[3] = CreateLineRenderer(cellStart + new Vector3(cellSize, 0, 0), cellStart + new Vector3(cellSize, 0, cellSize)); // Right
+
+    cellLineRenderers[gridPos] = lines;
+}
+
+private LineRenderer CreateLineRenderer(Vector3 start, Vector3 end)
+{
+    GameObject lineObject = new GameObject("GridLine");
+    lineObject.transform.parent = lineRendererParent;
+    LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+
+    lineRenderer.startWidth = 0.1f;
+    lineRenderer.endWidth = 0.1f;
+    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+    lineRenderer.useWorldSpace = true;
+    lineRenderer.positionCount = 2;
+
+    lineRenderer.SetPosition(0, start);
+    lineRenderer.SetPosition(1, end);
+
+    lineRenderer.startColor = defaultColor;
+    lineRenderer.endColor = defaultColor;
+
+    return lineRenderer;
+}
+```
+![image](https://github.com/Litt1eStar/Unity-Grid_Placement_System_3d/assets/90139527/8625335c-e9b1-4ada-adfc-f5d1a8e243f8)
 
