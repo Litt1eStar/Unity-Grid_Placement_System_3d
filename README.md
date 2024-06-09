@@ -82,6 +82,8 @@ The grid visualization feature is resource-intensive, especially with real-time 
 ## Grid Visualization
 To visualize a grid cell, lines are drawn to create a square. The lines are drawn in this order: bottom line, top line, left line, and right line.
 
+#### NOTE: You can used 1 line with 5 point instead of 4 line
+So, create 1 line and set position of 5 point in this order : Bottom Left Corner, Upper Left Corner, Upper Right Corner, Bottom Left Corner, Bottom Right Corner. Basically, you just start point at bottom left and the last point is also at the bottom left to close the cell shape. [This is another way to create cell]
 #### Here is method used to create visualize cell:
 #### GridVisualizer.cs
 ```csharp
